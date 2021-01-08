@@ -51,7 +51,7 @@ if( NOT cmake_build_type_tolower STREQUAL "coverage"
     # set(BENCHMARK_DOWNLOAD_DEPENDENCIES ON CACHE BOOL "Download dependencies?")
     # include(ConfigGBench)
 
-    add_subdirectory (bench)
+    # add_subdirectory (bench)
 endif()
 
 #------------------------------------------------------------------------------

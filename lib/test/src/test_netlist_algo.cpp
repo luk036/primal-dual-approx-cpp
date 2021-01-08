@@ -1,4 +1,5 @@
 #include <pldl/netlist.hpp> // import Netlist
+#include <pldl/netlist_algo.hpp> // import Netlist
 #include <doctest.h>
 #include <memory> //std::unique_ptr
 #include <py2cpp/py2cpp.hpp>
@@ -12,10 +13,6 @@ extern void readAre(SimpleNetlist& H, std::string_view areFileName);
 // min_net_cover_pd(SimpleNetlist &, const std::vector<int> &);
 
 using node_t = SimpleNetlist::node_t;
-extern std::tuple<py::set<node_t>, int> max_independent_net(
-    const SimpleNetlist&, const std::vector<int>&, const py::set<node_t>&);
-extern std::unique_ptr<SimpleNetlist> create_contraction_subgraph(
-    const SimpleNetlist&, const py::set<node_t>&);
 
 //
 // Primal-dual algorithm for minimum vertex cover problem
@@ -34,58 +31,26 @@ extern std::unique_ptr<SimpleNetlist> create_contraction_subgraph(
 //     CHECK(cost == 4053);
 // }
 
-TEST_CASE("Test max_independent_net dwarf")
+TEST_CASE("Test min_maximal_matching dwarf")
 {
     const auto H = create_dwarf();
+    // const auto N = H.number_of_nets();
+    auto matchset = py::dict<node_t, bool>{};
+    auto dep = py::dict<node_t, bool>{};
+    for (auto net : H.nets)
+    {
+        matchset[net] = false;
+        dep[net] = false;
+    }
     const auto rslt =
-        max_independent_net(H, H.module_weight, py::set<node_t> {});
-    CHECK(std::get<1>(rslt) == 3);
+        min_maximal_matching(H, H.module_weight, matchset, dep);
+    CHECK(rslt == 33);
 }
 
-// TEST_CASE("Test max_independent_net ibm01", "[test_max_independent_net]") {
+// TEST_CASE("Test min_maximal_matching ibm01") {
 //     auto H = readNetD("../../../testcases/ibm01.net");
 //     readAre(H, "../../../testcases/ibm01.are");
-//     auto [S, cost] = max_independent_net(H, H.net_weight);
+//     auto [S, cost] = min_maximal_matching(H, H.net_weight);
 //     CHECK(cost == 3157);
 // }
 
-TEST_CASE("Test contraction subgraph dwarf")
-{
-    const auto H = create_dwarf();
-    const auto H2 = create_contraction_subgraph(H, py::set<node_t> {});
-    // auto H3 = create_contraction_subgraph(*H2, py::set<node_t> {});
-    CHECK(H2->number_of_modules() < 7);
-    CHECK(H2->number_of_nets() == 3);
-    // CHECK(H2->number_of_pins() < 14);
-    CHECK(H2->get_max_net_degree() <= 3);
-
-    // auto part = std::vector<std::uint8_t>(H.number_of_modules(), 0);
-    // auto part2 = std::vector<std::uint8_t>(H2->number_of_modules(), 0);
-    // auto part3 = std::vector<std::uint8_t>(H2->number_of_modules(), 0);
-    // part2[0] = part2[2] = 1;
-    // part2[1] = 2;
-    // // H2->project_down(part2, part);
-    // // H2->project_up(part, part3);
-    // CHECK(part2 == part3);
-}
-
-// TEST_CASE("Test contraction subgraph ibm01", "[test_contractio_subgraph]") {
-//     auto H = readNetD("../../../testcases/ibm01.net");
-//     readAre(H, "../../../testcases/ibm01.are");
-//     auto H2 = create_contraction_subgraph(H, py::set<node_t>{});
-//     auto H3 = create_contraction_subgraph(*H2, py::set<node_t>{});
-//     CHECK(H2->number_of_modules() < H.number_of_modules());
-//     CHECK(H2->number_of_nets() < H.number_of_nets());
-//     CHECK(H2->number_of_pins() < H.number_of_pins());
-//     CHECK(H2->get_max_net_degree() <= H.get_max_net_degree());
-
-//     auto part2 = std::vector<std::uint8_t>(H2->number_of_modules(), 0);
-//     auto part3 = std::vector<std::uint8_t>(H3.number_of_modules(), 0);
-//     auto part4 = std::vector<std::uint8_t>(H3.number_of_modules(), 0);
-//     for (auto i = 0u; i != H3.number_of_modules(); ++i) {
-//         part3[i] = i;
-//     }
-//     H3.project_down(part3, part2);
-//     H3.project_up(part2, part4);
-//     CHECK(part3 == part4);
-// }

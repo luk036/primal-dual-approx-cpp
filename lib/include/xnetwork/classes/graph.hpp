@@ -1,6 +1,7 @@
 #pragma once
 
 #include <any>
+#include <boost/coroutine2/all.hpp>
 #include <cassert>
 #include <py2cpp/py2cpp.hpp>
 #include <string_view>
@@ -779,6 +780,39 @@ class Graph : public object
     //     this->operator[]("edges") = std::any(edges);
     //     return edges;
     // }
+    using coro_t = boost::coroutines2::coroutine<edge_t>;
+    using pull_t = typename coro_t::pull_type;
+
+    /// @TODO: sync with networkx
+    auto edges() const -> pull_t
+    {
+        auto func = [&](typename coro_t::push_type& yield) {
+            if constexpr (std::is_same_v<nodeview_t,
+                              decltype(py::range<int>(0))>)
+            {   // this->_succ???
+                for (auto&& [n, nbrs] : py::enumerate(this->_adj))
+                {
+                    for (auto&& nbr : nbrs)
+                    {
+                        yield(edge_t {n, nbr});
+                    }
+                }
+            }
+            else
+            {
+                for (auto&& [n, nbrs] : this->_adj.items())
+                {
+                    for (auto&& nbr : nbrs)
+                    {
+                        yield(edge_t {n, nbr});
+                    }
+                }
+            }
+        };
+
+
+        return pull_t(func);
+    }
 
     // /// @property
     // auto degree() {

@@ -1,6 +1,6 @@
 # primal-dual-approx-cpp
 
-Circuit Partitioning C++ Code
+Primal-dual Approximation Algorithms C++ Code
 
 [![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-Ready--to--Code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/luk036/primal-dual-approx-cpp)
 [![Build Status](https://travis-ci.org/luk036/primal-dual-approx-cpp.svg?branch=master)](https://travis-ci.org/luk036/primal-dual-approx-cpp)
@@ -33,7 +33,3 @@ To build with Ninja:
 To run CTest:
 
     ninja test
-
-Limits:
-
-    Maximum #partitions = 256
