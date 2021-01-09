@@ -794,7 +794,7 @@ class Graph : public object
                 {
                     for (auto&& nbr : nbrs)
                     {
-                        yield(edge_t {n, nbr});
+                        yield(edge_t {Node(n), Node(nbr)});
                     }
                 }
             }
@@ -804,7 +804,7 @@ class Graph : public object
                 {
                     for (auto&& nbr : nbrs)
                     {
-                        yield(edge_t {n, nbr});
+                        yield(edge_t {Node(n), Node(nbr)});
                     }
                 }
             }
