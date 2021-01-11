@@ -40,7 +40,10 @@ TEST_CASE("Test min_maximal_matching dwarf")
     for (auto net : H.nets)
     {
         matchset[net] = false;
-        dep[net] = false;
+    }
+    for (auto v : H.modules)
+    {
+        dep[v] = false;
     }
     const auto rslt =
         min_maximal_matching(H, H.module_weight, matchset, dep);

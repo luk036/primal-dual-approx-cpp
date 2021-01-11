@@ -105,6 +105,6 @@ auto min_maximal_matching(
             }
         }
     }
-    assert(total_dual_cost <= total_primal_cost);
+    // assert(total_dual_cost <= total_primal_cost);
     return total_primal_cost;
 }
