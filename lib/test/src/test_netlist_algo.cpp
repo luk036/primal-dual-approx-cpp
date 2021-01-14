@@ -14,46 +14,43 @@ extern void readAre(SimpleNetlist& H, std::string_view areFileName);
 
 using node_t = SimpleNetlist::node_t;
 
+TEST_CASE("Test min_vertex_cover dwarf")
+{
+    const auto H = create_dwarf();
+    auto weight = py::dict<node_t, int>{};
+    auto covset = py::dict<node_t, bool>{};
+    for (auto node : H.modules) {
+        weight[node] = 1;
+        covset[node] = false;
+    }
+    auto rslt = pldl::min_vertex_cover(H, weight, covset);
+    CHECK(rslt == 4);
+}
+
 //
 // Primal-dual algorithm for minimum vertex cover problem
 //
 
-// TEST_CASE("Test min_net_cover_pd dwarf", "[test_min_cover]") {
-//     auto H = create_dwarf();
-//     auto [S, cost] = min_net_cover_pd(H, H.module_weight);
-//     CHECK(cost == 3);
-// }
-
-// TEST_CASE("Test min_net_cover_pd ibm01", "[test_min_cover]") {
-//     auto H = readNetD("../../../testcases/ibm01.net");
-//     readAre(H, "../../../testcases/ibm01.are");
-//     auto [S, cost] = min_net_cover_pd(H, H.net_weight);
-//     CHECK(cost == 4053);
-// }
 
 TEST_CASE("Test min_maximal_matching dwarf")
 {
     const auto H = create_dwarf();
     // const auto N = H.number_of_nets();
     auto matchset = py::dict<node_t, bool>{};
+    auto weight = py::dict<node_t, int>{};
     auto dep = py::dict<node_t, bool>{};
     for (auto net : H.nets)
     {
         matchset[net] = false;
+        weight[net] = 1;
     }
     for (auto v : H.modules)
     {
         dep[v] = false;
     }
     const auto rslt =
-        min_maximal_matching(H, H.module_weight, matchset, dep);
-    CHECK(rslt == 33);
+        pldl::min_maximal_matching(H, weight, matchset, dep);
+    CHECK(rslt == 3);
 }
 
-// TEST_CASE("Test min_maximal_matching ibm01") {
-//     auto H = readNetD("../../../testcases/ibm01.net");
-//     readAre(H, "../../../testcases/ibm01.are");
-//     auto [S, cost] = min_maximal_matching(H, H.net_weight);
-//     CHECK(cost == 3157);
-// }
 
