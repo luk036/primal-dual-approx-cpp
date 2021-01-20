@@ -1,7 +1,7 @@
-#include <pldl/netlist.hpp> // import Netlist
-#include <pldl/netlist_algo.hpp> // import Netlist
 #include <doctest.h>
-#include <memory> //std::unique_ptr
+#include <memory>                //std::unique_ptr
+#include <pldl/netlist.hpp>      // import Netlist
+#include <pldl/netlist_algo.hpp> // import Netlist
 #include <py2cpp/py2cpp.hpp>
 #include <string_view>
 
@@ -17,9 +17,10 @@ using node_t = SimpleNetlist::node_t;
 TEST_CASE("Test min_vertex_cover dwarf")
 {
     const auto H = create_dwarf();
-    auto weight = py::dict<node_t, int>{};
-    auto covset = py::dict<node_t, bool>{};
-    for (auto node : H.modules) {
+    auto weight = py::dict<node_t, int> {};
+    auto covset = py::dict<node_t, bool> {};
+    for (auto node : H.modules)
+    {
         weight[node] = 1;
         covset[node] = false;
     }
@@ -36,9 +37,9 @@ TEST_CASE("Test min_maximal_matching dwarf")
 {
     const auto H = create_dwarf();
     // const auto N = H.number_of_nets();
-    auto matchset = py::dict<node_t, bool>{};
-    auto weight = py::dict<node_t, int>{};
-    auto dep = py::dict<node_t, bool>{};
+    auto matchset = py::dict<node_t, bool> {};
+    auto weight = py::dict<node_t, int> {};
+    auto dep = py::dict<node_t, bool> {};
     for (auto net : H.nets)
     {
         matchset[net] = false;
@@ -48,9 +49,6 @@ TEST_CASE("Test min_maximal_matching dwarf")
     {
         dep[v] = false;
     }
-    const auto rslt =
-        pldl::min_maximal_matching(H, weight, matchset, dep);
+    const auto rslt = pldl::min_maximal_matching(H, weight, matchset, dep);
     CHECK(rslt == 3);
 }
-
-

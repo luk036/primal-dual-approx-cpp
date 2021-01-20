@@ -3,8 +3,10 @@
 
 #include <algorithm>
 #include <numeric>
+#include <cassert>
 
-namespace pldl {
+namespace pldl
+{
 
 /*!
  * @brief minimum weighted vertex cover problem
@@ -20,22 +22,25 @@ namespace pldl {
  * @return C1::value_type total cost
  */
 template <typename Graph, typename C1, typename C2>
-auto min_vertex_cover(const Graph& G, const C1& weight, C2& cover)
-    -> typename C1::mapped_type
+auto min_vertex_cover(const Graph& G, const C1& weight, C2& cover) ->
+    typename C1::mapped_type
 {
     using T = typename C1::mapped_type;
 
     [[maybe_unused]] auto total_dual_cost = T(0);
     auto total_primal_cost = T(0);
     auto gap = weight;
-    for (auto&& e : G.edges()) {
+    for (auto&& e : G.edges())
+    {
         auto [u, v] = G.end_points(e);
-        if (cover[u] || cover[v]) {
+        if (cover[u] || cover[v])
+        {
             continue;
-    	}
-        if (gap[u] < gap[v]) { 
-	        std::swap(u, v);
-	    }
+        }
+        if (gap[u] < gap[v])
+        {
+            std::swap(u, v);
+        }
         cover[v] = true;
         total_dual_cost += gap[v];
         total_primal_cost += weight[v];
@@ -55,62 +60,71 @@ auto min_vertex_cover(const Graph& G, const C1& weight, C2& cover)
  *    This function solves minimum weighted maximal independant set problem
  *    using primal-dual approximation algorithm:
  *
- * @tparam Graph 
- * @tparam C1 
- * @tparam C2 
- * @param[in] G 
- * @param[in] weight 
- * @param[in,out] indset 
- * @param[in,out] dep 
- * @return C1::value_type 
+ * @tparam Graph
+ * @tparam C1
+ * @tparam C2
+ * @param[in] G
+ * @param[in] weight
+ * @param[in,out] indset
+ * @param[in,out] dep
+ * @return C1::value_type
  */
 template <typename Graph, typename C1, typename C2>
-auto min_maximal_independant_set(const Graph& G, const C1& weight, C2& indset, C2& dep) -> typename C1::mapped_type
+auto min_maximal_independant_set(const Graph& G, const C1& weight, C2& indset,
+    C2& dep) -> typename C1::mapped_type
 {
     using T = typename C1::mapped_type;
 
     auto cover = [&](const auto& u) {
-	    dep[u] = true;
-	    for (auto&& v : G[u]) {
-	        dep[v] = true;
-	    }
+        dep[u] = true;
+        for (auto&& v : G[u])
+        {
+            dep[v] = true;
+        }
     };
 
     auto gap = weight;
     [[maybe_unused]] auto total_dual_cost = T(0);
     auto total_primal_cost = T(0);
-    for (auto&& u : G) {
-        if (dep[u]) {
+    for (auto&& u : G)
+    {
+        if (dep[u])
+        {
             continue;
-	    }
-	    if (indset[u]) { // pre-define independant
-	        cover(u);
-	        continue;
-	    }
+        }
+        if (indset[u])
+        { // pre-define independant
+            cover(u);
+            continue;
+        }
         auto min_val = gap[u];
         auto min_vtx = u;
-        for (auto&& v : G[u]) {
-            if (dep[v]) {
+        for (auto&& v : G[u])
+        {
+            if (dep[v])
+            {
                 continue;
-	        }
-            if (min_val > gap[v]) {
+            }
+            if (min_val > gap[v])
+            {
                 min_val = gap[v];
                 min_vtx = v;
-	        }
-	    }
-	    cover(min_vtx);
+            }
+        }
+        cover(min_vtx);
         indset[min_vtx] = true;
         total_primal_cost += weight[min_vtx];
         total_dual_cost += min_val;
-	    if (min_vtx != u) {
-            for (auto&& v : G[u]) {
+        if (min_vtx != u)
+        {
+            for (auto&& v : G[u])
+            {
                 gap[v] -= min_val;
-	        }
-	    }
+            }
+        }
     }
     assert(total_dual_cost <= total_primal_cost);
     return total_primal_cost;
 }
 
 } // namespace pldl
-
