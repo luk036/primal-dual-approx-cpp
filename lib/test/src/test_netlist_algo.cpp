@@ -4,6 +4,8 @@
 #include <memory> //std::unique_ptr
 #include <py2cpp/py2cpp.hpp>
 #include <string_view>
+#include <pldl/ThreadPool.h>
+
 
 extern SimpleNetlist create_test_netlist(); // import create_test_netlist
 extern SimpleNetlist create_dwarf();        // import create_dwarf
@@ -17,6 +19,11 @@ using node_t = SimpleNetlist::node_t;
 TEST_CASE("Test min_vertex_cover dwarf")
 {
     const auto H = create_dwarf();
+
+    ThreadPool pool(std::thread::hardware_concurrency());
+    std::vector<std::future<void>> results;
+    std::vector<std::mutex> n_mutex(H.mdoules.size());
+
     auto weight = py::dict<node_t, int>{};
     auto covset = py::dict<node_t, bool>{};
     for (auto node : H.modules) {
