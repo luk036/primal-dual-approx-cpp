@@ -17,6 +17,7 @@ matrix:
             - librange-v3-dev
             - libbenchmark-dev
             - libboost-dev
+            - libboost-coroutine-dev
             - libfmt-dev
             - libspdlog-dev
             - lcov
@@ -37,6 +38,7 @@ matrix:
             - librange-v3-dev
             - libbenchmark-dev
             - libboost-dev
+            - libboost-coroutine-dev
             - libfmt-dev
             - libspdlog-dev
             - lcov
@@ -52,6 +54,7 @@ matrix:
             - librange-v3-dev
             - libbenchmark-dev
             - libboost-dev
+            - libboost-coroutine-dev
             - libfmt-dev
             - libspdlog-dev
             - lcov
