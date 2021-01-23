@@ -1,6 +1,6 @@
 // -*- coding: utf-8 -*-
-#include <pldl/netlist.hpp>
 #include <doctest.h>
+#include <pldl/netlist.hpp>
 #include <string_view>
 
 extern SimpleNetlist readNetD(std::string_view netDFileName);

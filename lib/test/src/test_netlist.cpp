@@ -1,6 +1,6 @@
 // -*- coding: utf-8 -*-
-#include <pldl/netlist.hpp>
 #include <doctest.h>
+#include <pldl/netlist.hpp>
 #include <py2cpp/py2cpp.hpp>
 #include <utility> // for std::pair
 #include <vector>

@@ -1,13 +1,14 @@
-#include <pldl/netlist.hpp>
-#include <memory>
-#include <py2cpp/py2cpp.hpp>
 #include <algorithm>
+#include <memory>
+#include <pldl/netlist.hpp>
+#include <py2cpp/py2cpp.hpp>
 #include <tuple>
 #include <vector>
 
 using node_t = typename SimpleNetlist::node_t;
 
-namespace pldl {
+namespace pldl
+{
 
 /*!
  * @brief minimum weighted vertex cover problem
@@ -23,28 +24,30 @@ namespace pldl {
  * @return C1::value_type total cost
  */
 template <typename Netlist, typename C1, typename C2>
-auto min_vertex_cover(const Netlist& H, const C1& weight, C2& coverset)
-    -> typename C1::mapped_type
+auto min_vertex_cover(const Netlist& H, const C1& weight, C2& coverset) ->
+    typename C1::mapped_type
 {
     using T = typename C1::mapped_type;
 
     [[maybe_unused]] auto total_dual_cost = T(0);
     auto total_primal_cost = T(0);
     auto gap = weight;
-    for (auto&& net : H.nets) {
+    for (auto&& net : H.nets)
+    {
         if (std::any_of(H.G[net].begin(), H.G[net].end(),
-            [&](const auto& v) { return coverset[v]; })) {
+                [&](const auto& v) { return coverset[v]; }))
+        {
             continue;
         }
 
-        auto min_vtx = *std::min_element( H.G[net].begin(), H.G[net].end(),
-            [&](const auto& v1, const auto& v2){ 
-                return gap[v1] < gap[v2]; } );
+        auto min_vtx = *std::min_element(H.G[net].begin(), H.G[net].end(),
+            [&](const auto& v1, const auto& v2) { return gap[v1] < gap[v2]; });
         auto min_val = gap[min_vtx];
         coverset[min_vtx] = true;
         total_primal_cost += weight[min_vtx];
         total_dual_cost += min_val;
-        for (auto&& u : H.G[net]) {
+        for (auto&& u : H.G[net])
+        {
             gap[u] -= min_val;
         }
     }
@@ -58,19 +61,19 @@ auto min_vertex_cover(const Netlist& H, const C1& weight, C2& coverset)
  *
  *    This function solves minimum maximal matching problem
  *    using primal-dual paradigm:
- * 
- * @tparam Netlist 
- * @tparam C1 
- * @tparam C2 
- * @param H 
- * @param weight 
- * @param matchset 
- * @param dep 
- * @return C1::value_type 
+ *
+ * @tparam Netlist
+ * @tparam C1
+ * @tparam C2
+ * @param H
+ * @param weight
+ * @param matchset
+ * @param dep
+ * @return C1::value_type
  */
 template <typename Netlist, typename C1, typename C2>
-auto min_maximal_matching(
-    const Netlist& H, const C1& weight, C2&& matchset, C2&& dep) -> typename C1::mapped_type
+auto min_maximal_matching(const Netlist& H, const C1& weight, C2&& matchset,
+    C2&& dep) -> typename C1::mapped_type
 {
     auto cover = [&](const auto& net) {
         for (auto&& v : H.G[net])

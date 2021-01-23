@@ -1,7 +1,7 @@
-#include <pldl/netlist.hpp>
 #include <climits>
 #include <fstream>
 #include <iostream>
+#include <pldl/netlist.hpp>
 #include <py2cpp/py2cpp.hpp>
 #include <string_view>
 #include <utility> // for std::pair

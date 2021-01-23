@@ -1,6 +1,6 @@
-#include <pldl/netlist.hpp> // import Netlist
-#include <pldl/graph_algo.hpp> // import Netlist
 #include <doctest.h>
+#include <pldl/graph_algo.hpp> // import Netlist
+#include <pldl/netlist.hpp>    // import Netlist
 #include <py2cpp/py2cpp.hpp>
 #include <string_view>
 
@@ -17,9 +17,10 @@ using node_t = SimpleNetlist::node_t;
 TEST_CASE("Test min_vertex_cover dwarf")
 {
     const auto H = create_dwarf();
-    auto weight = py::dict<node_t, int>{};
-    auto covset = py::dict<node_t, bool>{};
-    for (auto node : H.G) {
+    auto weight = py::dict<node_t, int> {};
+    auto covset = py::dict<node_t, bool> {};
+    for (auto node : H.G)
+    {
         weight[node] = 1;
         covset[node] = false;
     }
@@ -30,10 +31,11 @@ TEST_CASE("Test min_vertex_cover dwarf")
 TEST_CASE("Test min_maximal_independent_set dwarf")
 {
     const auto H = create_dwarf();
-    auto weight = py::dict<node_t, int>{};
-    auto indset = py::dict<node_t, bool>{};
-    auto dep = py::dict<node_t, bool>{};
-    for (auto node : H.G) {
+    auto weight = py::dict<node_t, int> {};
+    auto indset = py::dict<node_t, bool> {};
+    auto dep = py::dict<node_t, bool> {};
+    for (auto node : H.G)
+    {
         weight[node] = 1;
         indset[node] = false;
         dep[node] = false;
@@ -48,4 +50,3 @@ TEST_CASE("Test min_maximal_independent_set dwarf")
 //     auto [S, cost] = min_maximal_matching(H, H.net_weight);
 //     CHECK(cost == 3157);
 // }
-
