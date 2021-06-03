@@ -18,11 +18,11 @@ TEST_CASE("Test min_vertex_cover dwarf")
 {
     const auto H = create_dwarf();
     auto weight = py::dict<node_t, int> {};
-    auto covset = py::dict<node_t, bool> {};
+    auto covset = py::set<node_t> {};
     for (auto node : H.G)
     {
         weight[node] = 1;
-        covset[node] = false;
+        // covset[node] = false;
     }
     auto rslt = pldl::min_vertex_cover(H.G, weight, covset);
     CHECK(rslt == 9);
@@ -32,13 +32,13 @@ TEST_CASE("Test min_maximal_independent_set dwarf")
 {
     const auto H = create_dwarf();
     auto weight = py::dict<node_t, int> {};
-    auto indset = py::dict<node_t, bool> {};
-    auto dep = py::dict<node_t, bool> {};
+    auto indset = py::set<node_t> {};
+    auto dep = py::set<node_t> {};
     for (auto node : H.G)
     {
         weight[node] = 1;
-        indset[node] = false;
-        dep[node] = false;
+        // indset[node] = false;
+        // dep[node] = false;
     }
     auto rslt = pldl::min_maximal_independant_set(H.G, weight, indset, dep);
     CHECK(rslt == 7);

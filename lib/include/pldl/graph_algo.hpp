@@ -33,7 +33,7 @@ auto min_vertex_cover(const Graph& G, const C1& weight, C2& cover) ->
     for (auto&& e : G.edges())
     {
         auto [u, v] = G.end_points(e);
-        if (cover[u] || cover[v])
+        if (cover.contains(u) || cover.contains(v))
         {
             continue;
         }
@@ -41,7 +41,7 @@ auto min_vertex_cover(const Graph& G, const C1& weight, C2& cover) ->
         {
             std::swap(u, v);
         }
-        cover[v] = true;
+        cover.insert(v);
         total_dual_cost += gap[v];
         total_primal_cost += weight[v];
         gap[u] -= gap[v];
@@ -76,10 +76,10 @@ auto min_maximal_independant_set(const Graph& G, const C1& weight, C2& indset,
     using T = typename C1::mapped_type;
 
     auto cover = [&](const auto& u) {
-        dep[u] = true;
+        dep.insert(u);
         for (auto&& v : G[u])
         {
-            dep[v] = true;
+            dep.insert(v);
         }
     };
 
@@ -88,11 +88,11 @@ auto min_maximal_independant_set(const Graph& G, const C1& weight, C2& indset,
     auto total_primal_cost = T(0);
     for (auto&& u : G)
     {
-        if (dep[u])
+        if (dep.contains(u))
         {
             continue;
         }
-        if (indset[u])
+        if (indset.contains(u))
         { // pre-define independant
             cover(u);
             continue;
@@ -101,7 +101,7 @@ auto min_maximal_independant_set(const Graph& G, const C1& weight, C2& indset,
         auto min_vtx = u;
         for (auto&& v : G[u])
         {
-            if (dep[v])
+            if (dep.contains(v))
             {
                 continue;
             }
@@ -112,7 +112,7 @@ auto min_maximal_independant_set(const Graph& G, const C1& weight, C2& indset,
             }
         }
         cover(min_vtx);
-        indset[min_vtx] = true;
+        indset.insert(min_vtx);
         total_primal_cost += weight[min_vtx];
         total_dual_cost += min_val;
         if (min_vtx != u)

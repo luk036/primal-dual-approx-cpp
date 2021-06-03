@@ -35,7 +35,7 @@ auto min_vertex_cover(const Netlist& H, const C1& weight, C2& coverset) ->
     for (auto&& net : H.nets)
     {
         if (std::any_of(H.G[net].begin(), H.G[net].end(),
-                [&](const auto& v) { return coverset[v]; }))
+                [&](const auto& v) { return coverset.contains(v); }))
         {
             continue;
         }
@@ -43,7 +43,7 @@ auto min_vertex_cover(const Netlist& H, const C1& weight, C2& coverset) ->
         auto min_vtx = *std::min_element(H.G[net].begin(), H.G[net].end(),
             [&](const auto& v1, const auto& v2) { return gap[v1] < gap[v2]; });
         auto min_val = gap[min_vtx];
-        coverset[min_vtx] = true;
+        coverset.insert(min_vtx);
         total_primal_cost += weight[min_vtx];
         total_dual_cost += min_val;
         for (auto&& u : H.G[net])
@@ -78,13 +78,13 @@ auto min_maximal_matching(const Netlist& H, const C1& weight, C2&& matchset,
     auto cover = [&](const auto& net) {
         for (auto&& v : H.G[net])
         {
-            dep[v] = true;
+            dep.insert(v);
         }
     };
 
     auto any_of_dep = [&](const auto& net) {
         return std::any_of(H.G[net].begin(), H.G[net].end(),
-            [&](const auto& v) { return dep[v]; });
+            [&](const auto& v) { return dep.contains(v); });
     };
 
     using T = typename C1::mapped_type;
@@ -98,7 +98,7 @@ auto min_maximal_matching(const Netlist& H, const C1& weight, C2&& matchset,
         {
             continue;
         }
-        if (matchset[net])
+        if (matchset.contains(net))
         { // pre-define independant
             cover(net);
             continue;
@@ -121,7 +121,7 @@ auto min_maximal_matching(const Netlist& H, const C1& weight, C2&& matchset,
             }
         }
         cover(min_net);
-        matchset[min_net] = true;
+        matchset.insert(min_net);
         total_primal_cost += weight[min_net];
         total_dual_cost += min_val;
         if (min_net != net)

@@ -20,11 +20,11 @@ TEST_CASE("Test min_vertex_cover dwarf")
 {
     const auto H = create_dwarf();
     auto weight = py::dict<node_t, int> {};
-    auto covset = py::dict<node_t, bool> {};
+    auto covset = py::set<node_t> {};
     for (auto node : H.modules)
     {
         weight[node] = 1;
-        covset[node] = false;
+        // covset[node] = false;
     }
     auto rslt = pldl::min_vertex_cover(H, weight, covset);
     CHECK(rslt == 4);
@@ -39,18 +39,18 @@ TEST_CASE("Test min_maximal_matching dwarf")
 {
     const auto H = create_dwarf();
     // const auto N = H.number_of_nets();
-    auto matchset = py::dict<node_t, bool> {};
     auto weight = py::dict<node_t, int> {};
-    auto dep = py::dict<node_t, bool> {};
+    auto matchset = py::set<node_t> {};
+    auto dep = py::set<node_t> {};
     for (auto net : H.nets)
     {
-        matchset[net] = false;
+        // matchset[net] = false;
         weight[net] = 1;
     }
-    for (auto v : H.modules)
-    {
-        dep[v] = false;
-    }
+    // for (auto v : H.modules)
+    // {
+    //     dep[v] = false;
+    // }
     const auto rslt = pldl::min_maximal_matching(H, weight, matchset, dep);
     CHECK(rslt == 3);
 }
