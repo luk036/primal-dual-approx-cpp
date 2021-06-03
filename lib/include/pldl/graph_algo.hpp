@@ -2,8 +2,8 @@
 #pragma once
 
 #include <algorithm>
-#include <numeric>
 #include <cassert>
+#include <numeric>
 
 namespace pldl
 {

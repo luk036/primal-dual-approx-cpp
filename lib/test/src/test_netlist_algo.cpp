@@ -1,10 +1,10 @@
 #include <doctest.h>
-#include <memory>                //std::unique_ptr
+#include <memory> //std::unique_ptr
+#include <pldl/ThreadPool.h>
 #include <pldl/netlist.hpp>      // import Netlist
 #include <pldl/netlist_algo.hpp> // import Netlist
 #include <py2cpp/py2cpp.hpp>
 #include <string_view>
-#include <pldl/ThreadPool.h>
 
 
 extern SimpleNetlist create_test_netlist(); // import create_test_netlist

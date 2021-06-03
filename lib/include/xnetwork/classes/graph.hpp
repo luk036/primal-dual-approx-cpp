@@ -789,7 +789,7 @@ class Graph : public object
         auto func = [&](typename coro_t::push_type& yield) {
             if constexpr (std::is_same_v<nodeview_t,
                               decltype(py::range<int>(0))>)
-            {   // this->_succ???
+            { // this->_succ???
                 for (auto&& [n, nbrs] : py::enumerate(this->_adj))
                 {
                     for (auto&& nbr : nbrs)

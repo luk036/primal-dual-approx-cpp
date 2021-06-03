@@ -2,8 +2,11 @@
 #include <memory>
 #include <pldl/netlist.hpp>
 #include <py2cpp/py2cpp.hpp>
+#include <range/v3/algorithm/any_of.hpp>
+#include <range/v3/algorithm/min_element.hpp>
 #include <tuple>
 #include <vector>
+
 
 using node_t = typename SimpleNetlist::node_t;
 
@@ -28,19 +31,18 @@ auto min_vertex_cover(const Netlist& H, const C1& weight, C2& coverset) ->
     typename C1::mapped_type
 {
     using T = typename C1::mapped_type;
-
+    auto in_coverset = [&](const auto& v) { return coverset.contains(v); };
     [[maybe_unused]] auto total_dual_cost = T(0);
     auto total_primal_cost = T(0);
     auto gap = weight;
     for (auto&& net : H.nets)
     {
-        if (std::any_of(H.G[net].begin(), H.G[net].end(),
-                [&](const auto& v) { return coverset.contains(v); }))
+        if (ranges::any_of(H.G[net], in_coverset))
         {
             continue;
         }
 
-        auto min_vtx = *std::min_element(H.G[net].begin(), H.G[net].end(),
+        auto min_vtx = *ranges::min_element(H.G[net],
             [&](const auto& v1, const auto& v2) { return gap[v1] < gap[v2]; });
         auto min_val = gap[min_vtx];
         coverset.insert(min_vtx);
@@ -82,10 +84,12 @@ auto min_maximal_matching(const Netlist& H, const C1& weight, C2&& matchset,
         }
     };
 
-    auto any_of_dep = [&](const auto& net) {
-        return std::any_of(H.G[net].begin(), H.G[net].end(),
-            [&](const auto& v) { return dep.contains(v); });
-    };
+    auto in_dep = [&](const auto& v) { return dep.contains(v); };
+
+    // auto any_of_dep = [&](const auto& net) {
+    //     return ranges::any_of(
+    //         H.G[net], [&](const auto& v) { return dep.contains(v); });
+    // };
 
     using T = typename C1::mapped_type;
 
@@ -94,7 +98,7 @@ auto min_maximal_matching(const Netlist& H, const C1& weight, C2&& matchset,
     auto total_primal_cost = T(0);
     for (auto&& net : H.nets)
     {
-        if (any_of_dep(net))
+        if (ranges::any_of(H.G[net], in_dep))
         {
             continue;
         }
@@ -109,7 +113,7 @@ auto min_maximal_matching(const Netlist& H, const C1& weight, C2&& matchset,
         {
             for (auto&& net2 : H.G[v])
             {
-                if (any_of_dep(net2))
+                if (ranges::any_of(H.G[net2], in_dep))
                 {
                     continue;
                 }
@@ -131,10 +135,6 @@ auto min_maximal_matching(const Netlist& H, const C1& weight, C2&& matchset,
             {
                 for (auto&& net2 : H.G[v])
                 {
-                    // if (net2 == net)
-                    // {
-                    //     continue;
-                    // }
                     gap[net2] -= min_val;
                 }
             }
