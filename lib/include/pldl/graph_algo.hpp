@@ -75,7 +75,8 @@ auto min_maximal_independant_set(const Graph& G, const C1& weight, C2& indset,
 {
     using T = typename C1::mapped_type;
 
-    auto cover = [&](const auto& u) {
+    auto cover = [&](const auto& u)
+    {
         dep.insert(u);
         for (auto&& v : G[u])
         {

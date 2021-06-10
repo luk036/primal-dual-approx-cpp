@@ -423,12 +423,12 @@ class Graph : public object
     >>> G[0];
     AtlasView({1: {}});
      */
-    const auto& operator[](const Node& n) const
+    auto operator[](const Node& n) const -> const auto&
     {
         return this->adj()[n];
     }
 
-    auto& operator[](const Node& n)
+    auto operator[](const Node& n) -> auto&
     {
         return this->adj()[n];
     }
@@ -621,8 +621,8 @@ class Graph : public object
         >>> G.edges()[1, 2].update({0: 5});
      */
     template <typename U = key_type>
-    typename std::enable_if<std::is_same<U, value_type>::value>::type add_edge(
-        const Node& u, const Node& v)
+    auto add_edge(const Node& u, const Node& v) ->
+        typename std::enable_if<std::is_same<U, value_type>::value>::type
     {
         // auto [u, v] = u_of_edge, v_of_edge;
         // add nodes
@@ -638,8 +638,8 @@ class Graph : public object
     }
 
     template <typename U = key_type>
-    typename std::enable_if<!std::is_same<U, value_type>::value>::type add_edge(
-        const Node& u, const Node& v)
+    auto add_edge(const Node& u, const Node& v) ->
+        typename std::enable_if<!std::is_same<U, value_type>::value>::type
     {
         // auto [u, v] = u_of_edge, v_of_edge;
         // add nodes
@@ -786,7 +786,8 @@ class Graph : public object
     /// @TODO: sync with networkx
     auto edges() const -> pull_t
     {
-        auto func = [&](typename coro_t::push_type& yield) {
+        auto func = [&](typename coro_t::push_type& yield)
+        {
             if constexpr (std::is_same_v<nodeview_t,
                               decltype(py::range<int>(0))>)
             { // this->_succ???

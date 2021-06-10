@@ -77,7 +77,8 @@ template <typename Netlist, typename C1, typename C2>
 auto min_maximal_matching(const Netlist& H, const C1& weight, C2&& matchset,
     C2&& dep) -> typename C1::mapped_type
 {
-    auto cover = [&](const auto& net) {
+    auto cover = [&](const auto& net)
+    {
         for (auto&& v : H.G[net])
         {
             dep.insert(v);
