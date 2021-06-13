@@ -28,7 +28,8 @@ TEST_CASE("Test min_vertex_cover dwarf")
         // covset[node] = false;
     }
     auto rslt = pldl::min_vertex_cover(H, weight, covset);
-    CHECK(rslt == 4);
+    CHECK(rslt >= 4);
+    CHECK(rslt <= 5);
 }
 
 //

@@ -26,7 +26,8 @@ TEST_CASE("Test min_vertex_cover dwarf")
         // covset[node] = false;
     }
     auto rslt = pldl::min_vertex_cover(H.G, weight, covset);
-    CHECK(rslt == 9);
+    CHECK(rslt >= 7);
+    CHECK(rslt <= 9);
 }
 
 TEST_CASE("Test min_maximal_independent_set dwarf")
