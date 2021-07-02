@@ -1,4 +1,4 @@
-#include <doctest.h>
+#include <doctest/doctest.h>
 #include <memory> //std::unique_ptr
 #include <pldl/ThreadPool.h>
 #include <pldl/netlist.hpp>      // import Netlist

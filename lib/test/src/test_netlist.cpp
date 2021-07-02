@@ -1,5 +1,5 @@
 // -*- coding: utf-8 -*-
-#include <doctest.h>
+#include <doctest/doctest.h>
 #include <pldl/netlist.hpp>
 #include <py2cpp/py2cpp.hpp>
 #include <utility> // for std::pair

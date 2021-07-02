@@ -1,4 +1,4 @@
-#include <doctest.h>
+#include <doctest/doctest.h>
 #include <pldl/graph_algo.hpp> // import Netlist
 #include <pldl/netlist.hpp>    // import Netlist
 #include <py2cpp/py2cpp.hpp>
