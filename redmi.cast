@@ -665,7 +665,7 @@
 [269.251633, "o", "\u001b[1;23r\u001b[1;23r\u001b[57;111s\u001b[23;111H\n\u001b[1;23r\u001b[s\u001b[22;57H\u001b[1mcollected 8 items                                     \u001b[1;24r\u001b[23;57H\u001b(B\u001b[m"]
 [269.253972, "o", "\u001b[1;23r\u001b[1;23r\u001b[57;111s\u001b[23;111H\n\u001b[1;23r\u001b[s\u001b[23;57Htests/test_graph_algo.py::test_min_vertex_cover \u001b[1;24r\u001b[23;105H"]
 [269.262912, "o", "\u001b[1;23r\u001b[1;23r\u001b[57;111s\u001b[23;111H\n\u001b[1;23r\u001b[s\u001b[22;105H\u001b[32mPASSED \u001b[23;57H[ 12%]\u001b[1;24r\u001b[23;63H\u001b(B\u001b[m"]
-[269.268898, "o", "\u001b[1;23r\u001b[1;23r\u001b[57;111s\u001b[2S\u001b[1;23r\u001b[s\u001b[22;57Htests/test_graph_algo.py::test_min_maximal_independant_\u001b[23;57Hset \u001b[1;24r\u001b[23;61H"]
+[269.268898, "o", "\u001b[1;23r\u001b[1;23r\u001b[57;111s\u001b[2S\u001b[1;23r\u001b[s\u001b[22;57Htests/test_graph_algo.py::test_min_maximal_independent_\u001b[23;57Hset \u001b[1;24r\u001b[23;61H"]
 [269.279395, "o", "\u001b[32mPASSED [ 25%]\u001b(B\u001b[m"]
 [269.285199, "o", "\u001b[1;23r\u001b[1;23r\u001b[57;111s\u001b[23;111H\n\u001b[1;23r\u001b[s\u001b[23;57Htests/test_netlist.py::test_netlist \u001b[1;24r\u001b[23;93H"]
 [269.29117, "o", "\u001b[32mPASSED      [ 37%]\u001b(B\u001b[m"]

@@ -42,7 +42,7 @@ TEST_CASE("Test min_maximal_independent_set dwarf")
         // indset[node] = false;
         // dep[node] = false;
     }
-    auto rslt = pldl::min_maximal_independant_set(H.G, weight, indset, dep);
+    auto rslt = pldl::min_maximal_independent_set(H.G, weight, indset, dep);
     CHECK(rslt == 7);
 }
 
