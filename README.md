@@ -10,7 +10,7 @@
   <img src="./primal-dual-algorithmic-paradigm-ying-yang.svg"/>
 </p>
 
-# primal-dual-approx-cpp
+# ☯ primal-dual-approx-cpp
 
 Primal-dual Approximation Algorithms C++ Code
 
