@@ -24,29 +24,29 @@ namespace pldl {
 template <typename Graph, typename C1, typename C2>
 auto min_vertex_cover(const Graph &G, const C1 &weight, C2 &cover) ->
     typename C1::mapped_type {
-  using T = typename C1::mapped_type;
+    using T = typename C1::mapped_type;
 
-  [[maybe_unused]] auto total_dual_cost = T(0);
-  auto total_primal_cost = T(0);
-  auto gap = weight;
-  for (auto &&e : G.edges()) {
-    auto [u, v] = G.end_points(e);
-    if (cover.contains(u) || cover.contains(v)) {
-      continue;
+    [[maybe_unused]] auto total_dual_cost = T(0);
+    auto total_primal_cost = T(0);
+    auto gap = weight;
+    for (auto &&e : G.edges()) {
+        auto [u, v] = G.end_points(e);
+        if (cover.contains(u) || cover.contains(v)) {
+            continue;
+        }
+        if (gap[u] < gap[v]) {
+            std::swap(u, v);
+        }
+        cover.insert(v);
+        total_dual_cost += gap[v];
+        total_primal_cost += weight[v];
+        gap[u] -= gap[v];
+        gap[v] = T(0);
     }
-    if (gap[u] < gap[v]) {
-      std::swap(u, v);
-    }
-    cover.insert(v);
-    total_dual_cost += gap[v];
-    total_primal_cost += weight[v];
-    gap[u] -= gap[v];
-    gap[v] = T(0);
-  }
 
-  assert(total_dual_cost <= total_primal_cost);
-  assert(total_primal_cost <= 2 * total_dual_cost);
-  return total_primal_cost;
+    assert(total_dual_cost <= total_primal_cost);
+    assert(total_primal_cost <= 2 * total_dual_cost);
+    return total_primal_cost;
 }
 
 /**
@@ -67,49 +67,49 @@ auto min_vertex_cover(const Graph &G, const C1 &weight, C2 &cover) ->
 template <typename Graph, typename C1, typename C2>
 auto min_maximal_independent_set(const Graph &G, const C1 &weight, C2 &indset,
                                  C2 &dep) -> typename C1::mapped_type {
-  using T = typename C1::mapped_type;
+    using T = typename C1::mapped_type;
 
-  auto cover = [&](const auto &u) {
-    dep.insert(u);
-    for (auto &&v : G[u]) {
-      dep.insert(v);
-    }
-  };
+    auto cover = [&](const auto &u) {
+        dep.insert(u);
+        for (auto &&v : G[u]) {
+            dep.insert(v);
+        }
+    };
 
-  auto gap = weight;
-  [[maybe_unused]] auto total_dual_cost = T(0);
-  auto total_primal_cost = T(0);
-  for (auto &&u : G) {
-    if (dep.contains(u)) {
-      continue;
+    auto gap = weight;
+    [[maybe_unused]] auto total_dual_cost = T(0);
+    auto total_primal_cost = T(0);
+    for (auto &&u : G) {
+        if (dep.contains(u)) {
+            continue;
+        }
+        if (indset.contains(u)) { // pre-define independent
+            cover(u);
+            continue;
+        }
+        auto min_val = gap[u];
+        auto min_vtx = u;
+        for (auto &&v : G[u]) {
+            if (dep.contains(v)) {
+                continue;
+            }
+            if (min_val > gap[v]) {
+                min_val = gap[v];
+                min_vtx = v;
+            }
+        }
+        cover(min_vtx);
+        indset.insert(min_vtx);
+        total_primal_cost += weight[min_vtx];
+        total_dual_cost += min_val;
+        if (min_vtx != u) {
+            for (auto &&v : G[u]) {
+                gap[v] -= min_val;
+            }
+        }
     }
-    if (indset.contains(u)) { // pre-define independent
-      cover(u);
-      continue;
-    }
-    auto min_val = gap[u];
-    auto min_vtx = u;
-    for (auto &&v : G[u]) {
-      if (dep.contains(v)) {
-        continue;
-      }
-      if (min_val > gap[v]) {
-        min_val = gap[v];
-        min_vtx = v;
-      }
-    }
-    cover(min_vtx);
-    indset.insert(min_vtx);
-    total_primal_cost += weight[min_vtx];
-    total_dual_cost += min_val;
-    if (min_vtx != u) {
-      for (auto &&v : G[u]) {
-        gap[v] -= min_val;
-      }
-    }
-  }
-  assert(total_dual_cost <= total_primal_cost);
-  return total_primal_cost;
+    assert(total_dual_cost <= total_primal_cost);
+    return total_primal_cost;
 }
 
 } // namespace pldl

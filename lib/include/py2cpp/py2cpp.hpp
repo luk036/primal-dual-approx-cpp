@@ -8,11 +8,9 @@
 #include <unordered_set>
 #include <utility>
 
-template <typename T>
-using Value_type = typename T::value_type;
+template <typename T> using Value_type = typename T::value_type;
 
-namespace py
-{
+namespace py {
 
 /*!
  * @brief
@@ -24,44 +22,27 @@ namespace py
  * @return constexpr auto
  */
 template <typename T, typename TIter = decltype(std::begin(std::declval<T>())),
-    typename = decltype(std::end(std::declval<T>()))>
-constexpr auto enumerate(T&& iterable)
-{
-    struct iterator
-    {
+          typename = decltype(std::end(std::declval<T>()))>
+constexpr auto enumerate(T &&iterable) {
+    struct iterator {
         size_t i;
         TIter iter;
-        auto operator!=(const iterator& other) const -> bool
-        {
+        auto operator!=(const iterator &other) const -> bool {
             return iter != other.iter;
         }
-        void operator++()
-        {
+        void operator++() {
             ++i;
             ++iter;
         }
-        auto operator*() const
-        {
-            return std::tie(i, *iter);
-        }
-        auto operator*()
-        {
-            return std::tie(i, *iter);
-        }
+        auto operator*() const { return std::tie(i, *iter); }
+        auto operator*() { return std::tie(i, *iter); }
     };
-    struct iterable_wrapper
-    {
+    struct iterable_wrapper {
         T iterable;
-        auto begin()
-        {
-            return iterator {0, std::begin(iterable)};
-        }
-        auto end()
-        {
-            return iterator {0, std::end(iterable)};
-        }
+        auto begin() { return iterator{0, std::begin(iterable)}; }
+        auto end() { return iterator{0, std::end(iterable)}; }
     };
-    return iterable_wrapper {std::forward<T>(iterable)};
+    return iterable_wrapper{std::forward<T>(iterable)};
 }
 
 // template <typename T>
@@ -93,61 +74,45 @@ constexpr auto enumerate(T&& iterable)
 //     return iterable_wrapper{stop};
 // }
 
-template <typename T>
-inline constexpr auto range(T start, T stop)
-{
-    struct _iterator
-    {
+template <typename T> inline constexpr auto range(T start, T stop) {
+    struct _iterator {
         T i;
-        constexpr auto operator!=(const _iterator& other) const -> bool
-        {
+        constexpr auto operator!=(const _iterator &other) const -> bool {
             return this->i != other.i;
         }
-        constexpr auto operator==(const _iterator& other) const -> bool
-        {
+        constexpr auto operator==(const _iterator &other) const -> bool {
             return this->i == other.i;
         }
-        constexpr auto operator*() const -> T
-        {
-            return this->i;
-        }
-        constexpr auto operator++() -> _iterator&
-        {
+        constexpr auto operator*() const -> T { return this->i; }
+        constexpr auto operator++() -> _iterator & {
             ++this->i;
             return *this;
         }
     };
 
-    struct iterable_wrapper
-    {
+    struct iterable_wrapper {
       public:
         using value_type [[maybe_unused]] = T; // luk:
         using key_type [[maybe_unused]] = T;   // luk:
         using iterator = _iterator;            // luk
         T start;
         T stop;
-        [[nodiscard]] constexpr auto begin() const
-        {
-            return iterator {this->start};
+        [[nodiscard]] constexpr auto begin() const {
+            return iterator{this->start};
         }
-        [[nodiscard]] constexpr auto end() const
-        {
-            return iterator {this->stop};
+        [[nodiscard]] constexpr auto end() const {
+            return iterator{this->stop};
         }
-        [[nodiscard]] constexpr auto empty() const -> bool
-        {
+        [[nodiscard]] constexpr auto empty() const -> bool {
             return this->stop == this->start;
         }
-        [[nodiscard]] constexpr auto size() const -> size_t
-        {
+        [[nodiscard]] constexpr auto size() const -> size_t {
             return this->stop - this->start;
         }
-        constexpr auto operator[](size_t n) const -> T
-        {
+        constexpr auto operator[](size_t n) const -> T {
             return T(this->start + n);
         } // no bounds checking
-        [[nodiscard]] constexpr auto contains(T n) const -> bool
-        {
+        [[nodiscard]] constexpr auto contains(T n) const -> bool {
             return !(n < this->start) && n < this->stop;
         }
     };
@@ -156,12 +121,10 @@ inline constexpr auto range(T start, T stop)
     // if (stop < start) {
     //     stop = start;
     // }
-    return iterable_wrapper {start, stop};
+    return iterable_wrapper{start, stop};
 }
 
-template <typename T>
-inline constexpr auto range(T stop)
-{
+template <typename T> inline constexpr auto range(T stop) {
     return range(T(0), stop);
 }
 
@@ -170,9 +133,7 @@ inline constexpr auto range(T stop)
  *
  * @tparam Key
  */
-template <typename Key>
-class set : public std::unordered_set<Key>
-{
+template <typename Key> class set : public std::unordered_set<Key> {
     using Self = set<Key>;
 
   public:
@@ -180,30 +141,22 @@ class set : public std::unordered_set<Key>
      * @brief Construct a new set object
      *
      */
-    set()
-        : std::unordered_set<Key> {}
-    {
-    }
+    set() : std::unordered_set<Key>{} {}
 
     /*!
      * @brief Construct a new set object
      *
      */
     template <typename FwdIter>
-    set(const FwdIter& start, const FwdIter& stop)
-        : std::unordered_set<Key>(start, stop)
-    {
-    }
+    set(const FwdIter &start, const FwdIter &stop)
+        : std::unordered_set<Key>(start, stop) {}
 
     /*!
      * @brief Construct a new set object
      *
      * @param[in] init
      */
-    set(std::initializer_list<Key> init)
-        : std::unordered_set<Key> {init}
-    {
-    }
+    set(std::initializer_list<Key> init) : std::unordered_set<Key>{init} {}
 
     /*!
      * @brief
@@ -212,8 +165,7 @@ class set : public std::unordered_set<Key>
      * @return true
      * @return false
      */
-    auto contains(const Key& key) const -> bool
-    {
+    auto contains(const Key &key) const -> bool {
         return this->find(key) != this->end();
     }
 
@@ -222,30 +174,27 @@ class set : public std::unordered_set<Key>
      *
      * @return _Self
      */
-    auto copy() const -> set
-    {
-        return *this;
-    }
+    auto copy() const -> set { return *this; }
 
     /*!
      * @brief
      *
      * @return _Self&
      */
-    auto operator=(const set&) -> set& = delete;
+    auto operator=(const set &) -> set & = delete;
 
     /*!
      * @brief
      *
      * @return _Self&
      */
-    auto operator=(set&&) noexcept -> set& = default;
+    auto operator=(set &&) noexcept -> set & = default;
 
     /*!
      * @brief Move Constructor (default)
      *
      */
-    set(set<Key>&&) noexcept = default;
+    set(set<Key> &&) noexcept = default;
 
     // private:
     /*!
@@ -253,7 +202,7 @@ class set : public std::unordered_set<Key>
      *
      * Copy through explicitly the public copy() function!!!
      */
-    set(const set<Key>&) = default;
+    set(const set<Key> &) = default;
 };
 
 /*!
@@ -266,8 +215,7 @@ class set : public std::unordered_set<Key>
  * @return false
  */
 template <typename Key>
-inline auto operator<(const Key& key, const set<Key>& m) -> bool
-{
+inline auto operator<(const Key &key, const set<Key> &m) -> bool {
     return m.contains(key);
 }
 
@@ -278,9 +226,7 @@ inline auto operator<(const Key& key, const set<Key>& m) -> bool
  * @param[in] m
  * @return size_t
  */
-template <typename Key>
-inline auto len(const set<Key>& m) -> size_t
-{
+template <typename Key> inline auto len(const set<Key> &m) -> size_t {
     return m.size();
 }
 
@@ -295,19 +241,10 @@ inline auto len(const set<Key>& m) -> size_t
 // template <typename Key>
 // set(std::initializer_list<const char*> ) -> set<std::string>;
 
-template <typename Iter>
-struct key_iterator : Iter
-{
-    explicit key_iterator(Iter it)
-        : Iter(it)
-    {
-    }
-    auto operator*() const
-    {
-        return Iter::operator*().first;
-    }
-    auto operator++() -> key_iterator&
-    {
+template <typename Iter> struct key_iterator : Iter {
+    explicit key_iterator(Iter it) : Iter(it) {}
+    auto operator*() const { return Iter::operator*().first; }
+    auto operator++() -> key_iterator & {
         Iter::operator++();
         return *this;
     }
@@ -320,8 +257,7 @@ struct key_iterator : Iter
  * @tparam T
  */
 template <typename Key, typename T>
-class dict : public std::unordered_map<Key, T>
-{
+class dict : public std::unordered_map<Key, T> {
     using Self = dict<Key, T>;
     using Base = std::unordered_map<Key, T>;
 
@@ -332,10 +268,7 @@ class dict : public std::unordered_map<Key, T>
      * @brief Construct a new dict object
      *
      */
-    dict()
-        : std::unordered_map<Key, T> {}
-    {
-    }
+    dict() : std::unordered_map<Key, T>{} {}
 
     /*!
      * @brief Construct a new dict object
@@ -343,9 +276,7 @@ class dict : public std::unordered_map<Key, T>
      * @param[in] init
      */
     dict(std::initializer_list<value_type> init)
-        : std::unordered_map<Key, T> {init}
-    {
-    }
+        : std::unordered_map<Key, T>{init} {}
 
     /*!
      * @brief Construct a new dict object
@@ -368,8 +299,7 @@ class dict : public std::unordered_map<Key, T>
      * @return true
      * @return false
      */
-    auto contains(const Key& key) const -> bool
-    {
+    auto contains(const Key &key) const -> bool {
         return this->find(key) != this->end();
     }
 
@@ -380,10 +310,8 @@ class dict : public std::unordered_map<Key, T>
      * @param[in] default_value
      * @return T
      */
-    auto get(const Key& key, const T& default_value) -> T
-    {
-        if (!contains(key))
-        {
+    auto get(const Key &key, const T &default_value) -> T {
+        if (!contains(key)) {
             return default_value;
         }
         return (*this)[key];
@@ -394,10 +322,9 @@ class dict : public std::unordered_map<Key, T>
      *
      * @return auto
      */
-    auto begin() const
-    {
+    auto begin() const {
         using Iter = decltype(std::unordered_map<Key, T>::begin());
-        return key_iterator<Iter> {std::unordered_map<Key, T>::begin()};
+        return key_iterator<Iter>{std::unordered_map<Key, T>::begin()};
     }
 
     /*!
@@ -405,10 +332,9 @@ class dict : public std::unordered_map<Key, T>
      *
      * @return auto
      */
-    auto end() const
-    {
+    auto end() const {
         using Iter = decltype(std::unordered_map<Key, T>::end());
-        return key_iterator<Iter> {std::unordered_map<Key, T>::end()};
+        return key_iterator<Iter>{std::unordered_map<Key, T>::end()};
     }
 
     /*!
@@ -416,38 +342,28 @@ class dict : public std::unordered_map<Key, T>
      *
      * @return std::unordered_map<Key, T>&
      */
-    auto items() -> std::unordered_map<Key, T>&
-    {
-        return *this;
-    }
+    auto items() -> std::unordered_map<Key, T> & { return *this; }
 
     /*!
      * @brief
      *
      * @return const std::unordered_map<Key, T>&
      */
-    auto items() const -> const std::unordered_map<Key, T>&
-    {
-        return *this;
-    }
+    auto items() const -> const std::unordered_map<Key, T> & { return *this; }
 
     /*!
      * @brief
      *
      * @return _Self
      */
-    auto copy() const -> Self
-    {
-        return *this;
-    }
+    auto copy() const -> Self { return *this; }
 
     /*!
      * @brief
      *
      * @return _Self&
      */
-    auto operator[](const Key& k) const -> const T&
-    {
+    auto operator[](const Key &k) const -> const T & {
         return this->at(k); // luk: a bug in std::unordered_map?
     }
 
@@ -456,30 +372,27 @@ class dict : public std::unordered_map<Key, T>
      *
      * @return _Self&
      */
-    auto operator[](const Key& k) -> T&
-    {
-        return Base::operator[](k);
-    }
+    auto operator[](const Key &k) -> T & { return Base::operator[](k); }
 
     /*!
      * @brief
      *
      * @return _Self&
      */
-    auto operator=(const Self&) -> Self& = delete;
+    auto operator=(const Self &) -> Self & = delete;
 
     /*!
      * @brief
      *
      * @return _Self&
      */
-    auto operator=(Self&&) noexcept -> dict& = default;
+    auto operator=(Self &&) noexcept -> dict & = default;
 
     /*!
      * @brief Move Constructor (default)
      *
      */
-    dict(dict<Key, T>&&) noexcept = default;
+    dict(dict<Key, T> &&) noexcept = default;
 
     ~dict() = default;
 
@@ -489,7 +402,7 @@ class dict : public std::unordered_map<Key, T>
      *
      * Copy through explicitly the public copy() function!!!
      */
-    dict(const dict<Key, T>&) = default;
+    dict(const dict<Key, T> &) = default;
 };
 
 /*!
@@ -503,8 +416,7 @@ class dict : public std::unordered_map<Key, T>
  * @return false
  */
 template <typename Key, typename T>
-inline auto operator<(const Key& key, const dict<Key, T>& m) -> bool
-{
+inline auto operator<(const Key &key, const dict<Key, T> &m) -> bool {
     return m.contains(key);
 }
 
@@ -517,8 +429,7 @@ inline auto operator<(const Key& key, const dict<Key, T>& m) -> bool
  * @return size_t
  */
 template <typename Key, typename T>
-inline auto len(const dict<Key, T>& m) -> size_t
-{
+inline auto len(const dict<Key, T> &m) -> size_t {
     return m.size();
 }
 
